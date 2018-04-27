@@ -1,8 +1,10 @@
 pragma solidity ^0.4.17;
 
 import "./CNSSAccessControl.sol";
-import "./ClockAuction.sol";
+import "./ClockAuction/ClockAuction.sol";
 import "../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol";
+import "./ClockAuction/SaleClockAuction.sol";
+import "./ClockAuction/SiringClockAuction.sol";
 
 
 contract CNSSBase is CNSSAccessControl {
@@ -22,7 +24,7 @@ contract CNSSBase is CNSSAccessControl {
     uint64 cooldownEndBlock;
     uint32 matronId;
     uint32 sireId;
-    uint32 stringWithId;
+    uint32 siringWithId;
     uint16 cooldownIndex;
     uint16 generation;
   }
@@ -54,6 +56,9 @@ contract CNSSBase is CNSSAccessControl {
   mapping (uint256 => address) public gayIndexToApproved;
   mapping (uint256 => address) public sireAllowedToAddress;
 
+  SaleClockAuction public saleAuction;
+  SiringClockAuction public siringAuction;
+
   function _transfer(address _from, address _to, uint256 _tokenId) internal {
     ownershipTokenCount[_to] = ownershipTokenCount[_to].add(1);
     gayIndexToOwner[_tokenId] = _to;
@@ -83,7 +88,7 @@ contract CNSSBase is CNSSAccessControl {
       cooldownEndBlock: 0,
       matronId: uint32(_matronId),
       sireId: uint32(_sireId),
-      stringWithId: 0,
+      siringWithId: 0,
       cooldownIndex: cooldownIndex,
       generation: uint16(_generation)
     });

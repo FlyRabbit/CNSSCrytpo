@@ -1,7 +1,7 @@
 pragma solidity ^0.4.17;
 
 import "./CNSSBase.sol";
-import "../node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721.sol";
+//import "../node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 
 
 contract CNSSOwnership is CNSSBase, ERC721 {
