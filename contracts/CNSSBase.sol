@@ -72,7 +72,13 @@ contract CNSSBase is CNSSAccessControl {
     emit Transfer(_from, _to, _tokenId);
   }
 
-  function _createGay(address _owner, uint256 _generation, uint256 _matronId, uint256 _sireId, uint256 _genes)internal returns (uint256) {
+  function _createGay(
+        uint256 _matronId,
+        uint256 _sireId,
+        uint256 _generation,
+        uint256 _genes,
+        address _owner
+  )internal returns (uint256) {
     require(_matronId == uint256(uint32(_matronId)));
     require(_sireId == uint256(uint32(_sireId)));
     require(_generation == uint256(uint16(_generation)));

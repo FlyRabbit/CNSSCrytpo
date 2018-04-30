@@ -1,8 +1,9 @@
 pragma solidity ^0.4.17;
 
 import "./CNSSOwnership.sol";
+import "./GeneScienceInterface.sol";
 
-contract GayBreeding is GayOwnership {
+contract CNSSBreeding is CNSSOwnership {
   event Pregnant(address owner, uint256 matronId, uint256 sireId, uint256 cooldownEndBlock);
 
   uint256 public autoBirthFee = 2 finney;
@@ -18,7 +19,7 @@ contract GayBreeding is GayOwnership {
   }
 
   function _isReadyToBreed(Gay _gay) internal view returns (bool) {
-    return (_kit.siringWithId == 0) && (_kit.cooldownEndBlock <= uint64(block.number));
+    return (_gay.siringWithId == 0) && (_gay.cooldownEndBlock <= uint64(block.number));
   }
 
   function _isSiringPermitted(uint256 _sireId, uint256 _matronId) internal view returns (bool) {
@@ -28,7 +29,7 @@ contract GayBreeding is GayOwnership {
   }
 
   function _triggerCooldown(Gay storage _gay) internal{
-    _gay.cooldownEndBlock = uint64((cooldowns[_gay.cooldownIndex].div(secondsPerBlock).add(block.number)));
+    _gay.cooldownEndBlock = uint64((cooldowns[_gay.cooldownIndex]/secondsPerBlock).add(block.number));
     if (_gay.cooldownIndex < 13) {
       _gay.cooldownIndex = _gay.cooldownIndex.add(1);
     }
@@ -89,7 +90,7 @@ contract GayBreeding is GayOwnership {
   function _canBreedWithViaAuction(uint256 _matronId, uint256 _sireId)internal view returns (bool){
     Gay storage matron = gays[_matronId];
     Gay storage sire = gays[_sireId];
-    return _isValidMatingPair(matronId, _matronId, sire, _sireId);
+    return _isValidMatingPair(matron, _matronId, sire, _sireId);
   }
 
   function canBreedWith(uint256 _matronId, uint256 _sireId) external view returns(bool){
@@ -104,7 +105,7 @@ contract GayBreeding is GayOwnership {
     Gay storage sire = gays[_sireId];
     Gay storage matron = gays[_matronId];
 
-    matron.siringWithId = uint32(sireId);
+    matron.siringWithId = uint32(_sireId);
 
     _triggerCooldown(sire);
     _triggerCooldown(matron);
@@ -118,7 +119,7 @@ contract GayBreeding is GayOwnership {
   }
 
   function breedWithAuto(uint256 _matronId, uint256 _sireId) external payable whenNotPaused{
-    require(msg.sender >= autoBirthFee);
+    require(msg.value >= autoBirthFee);
     require(_owns(msg.sender, _matronId));
     require(_isSiringPermitted(_sireId, _matronId));
 
@@ -145,7 +146,7 @@ contract GayBreeding is GayOwnership {
       parentGen = sire.generation;
     }
 
-    uint256 childGenes = geneScience.mixGenes(matron.genes, sire.genes, mation.cooldownEndBlock - 1);
+    uint256 childGenes = geneScience.mixGenes(matron.genes, sire.genes, matron.cooldownEndBlock - 1);
     address owner = gayIndexToOwner[_matronId];
     uint256 gayenId = _createGay(_matronId, matron.siringWithId, parentGen + 1, childGenes, owner);
 

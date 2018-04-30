@@ -8,12 +8,12 @@ contract CNSSCore is CNSSMinting{
   function GayCore() public {
     paused = true;
     etenalAddress = msg.sender;
-    _creatGay(0, 0, 0, uint256(-1), address(0));
+    _createGay(0, 0, 0, uint256(-1), address(0));
   }
 
   function setNewAddress(address _v2Address) external onlyEtenal whenPaused {
         newContractAddress = _v2Address;
-        ContractUpgrade(_v2Address);
+        emit ContractUpgrade(_v2Address);
   }
   
   function() external payable {
@@ -69,7 +69,7 @@ contract CNSSCore is CNSSMinting{
         uint256 subtractFees = (pregnantGays + 1) * autoBirthFee;
 
         if (balance > subtractFees) {
-            cfoAddress.send(balance - subtractFees);
+            etenalAddress.send(balance - subtractFees);
         }
     }
 }

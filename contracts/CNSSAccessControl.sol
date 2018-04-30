@@ -40,7 +40,7 @@ contract CNSSAccessControl {
     paused = true;
   }
 
-  function unPause( ) external onlyEtenal whenPaused {
+  function unpause() public onlyEtenal whenPaused {
     paused = false;
   }
 }

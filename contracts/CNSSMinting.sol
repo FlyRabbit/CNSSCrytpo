@@ -18,7 +18,7 @@ contract CNSSMinting is CNSSAuction{
   function createPromoGay(uint256 _genes, address _owner) external onlyEtenal{
     address gayOwner = _owner;
     if (gayOwner == address(0)) {
-          gayOwner = cooAddress;
+          gayOwner = etenalAddress;
     }
     require(promoCreatedCount < PROMO_CREATION_LIMIT);
 
